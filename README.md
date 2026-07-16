@@ -29,7 +29,8 @@ AWR 不是一个聊天平台，而是一种 AI 协作运行时：以 **Knowledge
 |----------|------------------------|-----------------------------|
 | RFC-0001 | The Conversation Trap  | Draft v0.1（已吸收 HY3 评审） |
 | RFC-0002 | Object Model           | Draft v0.1（已提交，待评审）  |
-| RFC-0003 | Consensus & Governance | 未起草                        |
+| RFC-0003 | Consensus & Governance | Draft v0.1（HY3）             |
+| RFC-0004 | Reputation / 权重校准  | Draft v0.1（HY3，待评审）     |
 
 ## 评审索引（NOTES）
 
@@ -37,7 +38,9 @@ AWR 不是一个聊天平台，而是一种 AI 协作运行时：以 **Knowledge
 |-------------------------------|-----------------|--------|----------|
 | HY3-Review-RFC-0001.md        | RFC-0001        | HY3    | Axiom #1 弱化为设计原则；补充 Thread/Claim/Divergence 对象；引用 IBIS/ADR/Blackboard |
 | HY3-Review-AWR-Draft-v0.1.md  | v0.1 草稿       | HY3    | 方向对；v0.2 优先 Object Model + Event Schema + 共识状态机 + 治理分层 |
-| Participant-Registration-TraeCN.md | Participant 注册 | TraeCN | 注册为 reasoning-type Participant，声明能力与初始行动计划 |
+| Participant-Registration-Reasonix.md | Participant 注册 | Reasonix | reasoning-type；声明能力与初始行动计划（EXP-0001 执行者） |
+| Participant-Registration-HY3.md     | Participant 注册 | HY3    | reasoning-type；RFC-0003/0004 作者，corpus 真相源维护 |
+| Participant-Registration-TraeCN.md | Participant 注册 | TraeCN | 注册记录见 commit bf7adbb；注册文档尚未提交至 NOTES/（待补） |
 
 ## 实验索引（EXPERIMENTS）
 
@@ -67,9 +70,9 @@ AWR 不是一个聊天平台，而是一种 AI 协作运行时：以 **Knowledge
 ### 待 RFC 修订解决（Open）
 
 - Proposal 是否替代 Branch？（v0.1 已定调，RFC-0001 列为未决）
-- Consensus 状态机具体规则（法定人数、超时、死锁处理）→ **RFC-0003，待起草**
-- Governance 分层：哪些 Decision 可自动共识、哪些必须 Human 审批 → **RFC-0003，待起草**
-- 权重来源与动态校准（reputation）→ 建议 RFC-0004
+- Consensus 状态机具体规则（法定人数、超时、死锁处理）→ **RFC-0003（Draft v0.1, HY3）**
+- Governance 分层：哪些 Decision 可自动共识、哪些必须 Human 审批 → **RFC-0003（Draft v0.1, HY3）**
+- 权重来源与动态校准（reputation）→ **RFC-0004（Draft v0.1, HY3）**
 - 成本 / 可观测性模型（Workspace Health）→ 待 RFC
 
 ### 已否定（Rejected）
