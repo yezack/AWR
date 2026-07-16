@@ -4,7 +4,7 @@
 > **Version:** v0.1（自 v0.0 修订）
 > **Reviewers:** HY3
 > **Based on:** [HY3-Review-RFC-0001.md](../NOTES/HY3-Review-RFC-0001.md)
-> **Supersedes:** RFC-0001 v0.0
+> **Supersedes:** 0001 v0.0
 >
 > **Purpose**
 >
@@ -413,9 +413,9 @@ AWR 倾向于：
 AWR/
 │
 ├── RFC/
-│   ├── RFC-0001-The-Conversation-Trap.md      ← 本文
-│   ├── RFC-0002-Object-Model.md               （待起草）
-│   ├── RFC-0003-Governance.md                 （待起草）
+│   ├── 0001-conversation-trap.md              ← 本文
+│   ├── 0002-object-model.md                   （已起草）
+│   ├── 0003-consensus-governance.md           （已起草）
 │   └── ...
 │
 ├── NOTES/

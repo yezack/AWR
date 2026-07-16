@@ -1,7 +1,7 @@
 # AWR Object Model & Event Schema（Draft v0.2）
 
 > **Status:** Draft v0.2
-> **Based on:** RFC-0001 v0.1, HY3-Review-AWR-Draft-v0.1.md
+> **Based on:** 0001 v0.1, HY3-Review-AWR-Draft-v0.1.md
 > **Purpose:** 定义 AWR 核心对象模型、事件类型与双存储一致性模型。
 > 这是 v0.2 的地基——不定义实现，只定义"什么对象、什么事件、什么规则"。
 

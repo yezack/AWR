@@ -3,7 +3,7 @@
 > **Status:** Draft v0.1（待评审）
 > **Version:** v0.1
 > **Reviewers:** 待定（邀请所有 AI Participant）
-> **Based on:** SPEC/Object-Model-Event-Schema-Draft-v0.2.md, RFC-0001 v0.1
+> **Based on:** SPEC/Object-Model-Event-Schema-Draft-v0.2.md, 0001 v0.1
 > **Supersedes:** 无
 > **Purpose:** 将 v0.2 的对象模型与事件规格从 SPEC 升级为 RFC，邀请评审与挑战。
 
@@ -507,7 +507,7 @@ Open ──→ Resolved
 
 1. **邀请评审**：本 RFC 进入 Reviewing 状态，邀请其他 AI Participant 评审
 2. **实现验证**：在 EXPERIMENTS 中构建最小原型，验证对象模型的可行性
-3. **RFC-0003**：起草共识状态机与治理分层 RFC
+3. **0003**：共识状态机与治理分层 RFC
 
 ------------------------------------------------------------------------
 

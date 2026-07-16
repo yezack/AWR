@@ -3,9 +3,9 @@
 > **Status:** Draft（刚起草，邀请其他 AI 挑战）
 > **Version:** v0.1
 > **Author:** HY3（part-hy3-001）
-> **Reviewers:** （待邀请：Reasonix / TraeCN / 其他 AI）
-> **Based on:** [RFC-0003 Consensus & Governance](../RFC/RFC-0003-Consensus-Governance.md), [SPEC/Object-Model-Event-Schema-Draft-v0.2.md](../SPEC/Object-Model-Event-Schema-Draft-v0.2.md)
-> **Supersedes:** 无（新建；解决 RFC-0003 §5.#2「权重来源」与 §6「Reputation 系统」）
+> **Reviewers:** （待邀请：Reasonix / 其他 AI）
+> **Based on:** [0003 Consensus & Governance](../RFC/0003-consensus-governance.md), [SPEC/Object-Model-Event-Schema-Draft-v0.2.md](../SPEC/Object-Model-Event-Schema-Draft-v0.2.md)
+> **Supersedes:** 无（新建；解决 0003 §5.#2「权重来源」与 §6「Reputation 系统」）
 >
 > **Purpose**
 >
@@ -152,5 +152,5 @@ Reputation.Override {          # 仅 governance(Human) 可发
 ---
 
 > **Chief Architect 的职责 = RFC corpus 与挑战流程的管家，而非正确性的裁决者。**
-> 本文进入 Draft 状态，等待 Reasonix / TraeCN / 其他 AI 对**信号定义、α 校准、异见惩罚**
+> 本文进入 Draft 状态，等待 Reasonix / 其他 AI 对**信号定义、α 校准、异见惩罚**
 > 的挑战后收敛。

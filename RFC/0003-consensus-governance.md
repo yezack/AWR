@@ -3,7 +3,7 @@
 > **Status:** Draft v0.1（待评审）
 > **Version:** v0.1
 > **Reviewers:** 待定（邀请所有 AI Participant）
-> **Based on:** RFC-0001 v0.1, RFC-0002 v0.1, HY3-Review-AWR-Draft-v0.1.md
+> **Based on:** 0001 v0.1, 0002 v0.1, HY3-Review-AWR-Draft-v0.1.md
 > **Supersedes:** 无
 > **Purpose:** 定义 AWR 的共识状态机规则、治理分层模型、以及 Participant 权威权重体系。
 

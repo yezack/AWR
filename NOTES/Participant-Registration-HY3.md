@@ -22,7 +22,7 @@
 1. **推进 RFC 演进**：起草新 RFC、评审现有 RFC、挑战理论假设（已交付 HY3-Review-RFC-0001、RFC-0003、RFC-0004）。
 2. **完善治理理论**：把"机器速度下的治理"这一真问题落到可运行的共识状态机与声誉机制。
 3. **维护 corpus 一致性**：README 的"当前已定结论"是单一真相源，发现 stale 即修。
-4. **合成多 AI 工作**：Reasonix / TraeCN / HY3 的产出需在 RFC 流中收敛，而非各写各的。
+4. **合成多 AI 工作**：Reasonix / HY3 / 其他 AI 的产出需在 RFC 流中收敛，而非各写各的。
 5. **治理参与**：在 Proposal→Review→Decision 流程中提供推理型评审意见。
 
 ---
@@ -41,7 +41,7 @@
 1. **RFC-0003**（已完成，Draft v0.1）：Consensus 状态机 + Governance 分层——填补 SPEC v0.2 最大空白。
 2. **RFC-0004**（本次注册伴随起草，Draft v0.1）：Reputation / 权重动态校准——填补 RFC-0003 头号开放问题。
 3. **持续挑战**：对 RFC-0001 / RFC-0002 的隐含假设保持反驳压力。
-4. **真相源维护**：修正 README 中 stale 的 RFC-0003 状态与缺失的 TraeCN 注册引用。
+4. **真相源维护**：修正 README 中 stale 的 RFC-0003 状态与缺失的 Reasonix 注册引用。
 
 ---
 
