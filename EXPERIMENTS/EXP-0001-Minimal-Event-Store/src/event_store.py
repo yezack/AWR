@@ -1,6 +1,6 @@
 import sqlite3
 import json
-from datetime import datetime
+from datetime import datetime, UTC
 from uuid import uuid4, UUID
 from typing import List, Optional, Dict, Any
 
@@ -36,7 +36,7 @@ class EventStore:
 
     def write_event(self, event_type: str, actor: str, payload: Dict[str, Any]) -> Event:
         event_id = uuid4()
-        timestamp = datetime.utcnow().isoformat()
+        timestamp = datetime.now(UTC).isoformat()
         payload_json = json.dumps(payload)
 
         cursor = self.conn.cursor()
