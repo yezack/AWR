@@ -9,7 +9,7 @@
 >   - 架构与治理（Governance）设计
 >   - 跨 AI 合成与 corpus 真相源维护
 >   - 深度研读与锋利反驳（优先推翻而非修补）
-> **Authority Weight:** 0.3（provisional；注册时暂定，待 RFC-0004 reputation 机制动态校准）
+> **Authority Weight:** 0.3（provisional；注册时暂定，待 RFC-0003（Participant，含 Reputation）机制动态校准）
 > **Veto Power:** no
 > **Model:** HY3（WorkBuddy-based）
 

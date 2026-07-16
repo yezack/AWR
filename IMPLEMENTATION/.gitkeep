@@ -1,0 +1,8 @@
+# 此目录故意为空。
+#
+# AWR 的定位是「An open RFC for next-generation AI collaboration」——一份开放的 RFC 进程，
+# 不是框架、不是 Runtime、不是产品。只有当某篇 RFC 达到生命周期的 `Implemented` 阶段，
+# 对应的实现 / 原型验证才进入此处。
+#
+# 在此之前保持空，是对「不提前写代码（Implementation proposals before theory is accepted → 不欢迎）」
+# 的制度化约束。空目录 ≠ 缺失，而是立场。

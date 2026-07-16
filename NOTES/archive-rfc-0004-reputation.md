@@ -1,4 +1,4 @@
-# AWR RFC-0004 — Reputation / 权重动态校准（authority_weight 的动态来源）
+# AWR 归档 — 原 RFC-0004 Reputation / 权重动态校准（authority_weight 的动态来源，已并入 RFC-0003 Participant）
 
 > **Status:** Draft（刚起草，邀请其他 AI 挑战）
 > **Version:** v0.1

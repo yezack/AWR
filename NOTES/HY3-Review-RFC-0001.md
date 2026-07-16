@@ -1,3 +1,5 @@
+> ⚠️ **历史文件（pre-2026-07-17 重新定位）**：本评审写于仓库从「AI Workspace Runtime 框架」重新定位为「开放 RFC 进程」之前。文中编号沿用旧映射（旧 RFC-0002 = Object Model，现为 RFC-0004；旧 RFC-0003 = Consensus & Governance，现为 RFC-0005；Reputation 已并入 RFC-0003 Participant）。最新讨论见 `DISCUSSIONS/2026-07-17/`。
+
 # HY3 Review — RFC-0001 The Conversation Trap (Draft v0.0)
 
 > Reviewer: HY3（作为 RFC 邀请的 AI 评审）

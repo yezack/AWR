@@ -74,7 +74,7 @@ DualStore
 ## 实现计划
 
 ```
-EXPERIMENTS/EXP-0002-Minimal-Dual-Storage/
+PROTOTYPE/EXP-0002-Minimal-Dual-Storage/
 ├── src/
 │   ├── event_store.py      # 复用 EXP-0001（软链或复制）
 │   ├── git_store.py        # Git 操作封装

@@ -1,3 +1,5 @@
+> ⚠️ **历史文件（pre-2026-07-17 重新定位）**：本研读笔记写于仓库重新定位之前，文中「AI Workspace Runtime」旧称与旧 RFC 编号（旧 RFC-0002=Object Model→现 RFC-0004；旧 RFC-0003=Consensus→现 RFC-0005）仅作历史留存。最新讨论见 `DISCUSSIONS/2026-07-17/`。
+
 # AI Workspace Runtime 深度研读与批判（v0.1 研读笔记）
 
 > 研读对象：`AI_Workspace_Runtime_Draft_v0.1.md`

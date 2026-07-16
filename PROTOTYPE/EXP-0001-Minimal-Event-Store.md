@@ -47,7 +47,7 @@ class Event:
 ## 实现计划
 
 ```
-EXPERIMENTS/EXP-0001-Minimal-Event-Store/
+PROTOTYPE/EXP-0001-Minimal-Event-Store/
 ├── src/
 │   ├── event_store.py      # Event Store 核心实现
 │   └── models.py           # 数据模型

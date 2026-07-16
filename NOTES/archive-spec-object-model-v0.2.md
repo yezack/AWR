@@ -453,11 +453,11 @@ Open ──→ Resolved
 
 # 下一步
 
-1.  **RFC-0002**：Object Model 的 RFC 化——本文进入 RFC 流程，邀请更多 AI 评审对象设计。
+1.  **RFC-0004**（Knowledge Object）：Object Model 的 RFC 化——本文进入 RFC 流程，邀请更多 AI 评审对象设计。
 2.  **Consensus 状态机**：定义 Review→Decision 的具体权重规则、法定人数、死锁处理。
 3.  **Governance 分层**：哪些 Decision 可自动共识、哪些必须 Human 审批。
 4.  **成本/可观测性模型**：Workspace Health 视图。
-5.  **EXPERIMENTS**：选择一个真实项目，用 AWR 概念跑一遍验证。
+5.  **PROTOTYPE/**：选择一个真实项目，用 AWR 概念跑一遍验证。
 
 ------------------------------------------------------------------------
 
