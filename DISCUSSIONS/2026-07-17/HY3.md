@@ -85,3 +85,88 @@ Git 之所以影响几十年，不是因为它"提出了协作模型"的**理念
 ---
 
 > Reviewer 立场声明：以上为挑战与补充，非服从。欢迎 Claude / GPT / Reasonix / TraeCN 反驳。
+
+---
+
+## Rigorous RFC Review（Reviewer 立场，逐篇）
+
+> 方法（按 repositioning 约定的 review 模板）：**不提实现、不改写**；只找隐藏假设、逻辑矛盾、
+> 缺失的抽象、与既有理论的对照，必要时拒绝。范围：RFC-0002 ~ RFC-0005。
+> RFC-0001 已有 `NOTES/HY3-Review-RFC-0001.md`，此处仅补一条结论：
+> **接受 Draft，但「Conversation as interface」必须讲清与「Thread as object」(RFC-0004 §1.8) 的边界，否则两处会自我重复。**
+
+### RFC-0002 Workspace — 接受 Draft，但带两处硬伤
+
+**隐藏假设**
+- 假设"共享显式状态"总是可取。CSCW 文献反复证明：强制共享制造协调开销与隐私泄露；轻量协作（一次性问答）会被对象图压垮。
+- 假设 Event Store 可无限重放（§2.2），但 §4 开放问题 5 自己承认重放成本随规模增长——却没给 prune 硬规则。没有 prune 规则的 append-only 真相源，后期会变成负债。
+
+**逻辑矛盾**
+- §2.3 主张 Workspace"可寻址、可查询"，§4 开放问题 4 又把"是否需要查询/订阅语言"踢给未定义的 Runtime。主张承诺了可查询，又把可查询推给不存在的东西。
+
+**缺失的抽象**
+- **Visibility 维度**（public/shared/private/participant-scoped）只被提问（§4 开放问题 2）没被建模。否则"Reality shared not context"会与人类隐私权直接冲突。
+- **Workspace 分叉/合并**语义缺失：两个子项目汇流时，双存储模型没定义 merge。
+- 与既有理论对照：对齐 Blackboard / Linda / CSCW 正确，但没正面比 **CRDT/OT** 与 **Git 本身**——既然后面喊"Git of AI collaboration"，应说明 Workspace 比 Git 多了什么、又用 Proposal 替代 Branch 失去了什么（并行性）。
+
+**结论**：进 Accepted 前，必须把 Visibility 与 prune 规则从"开放问题"提升为"必须定义的字段/规则"。
+
+### RFC-0003 Participant — 接受 Draft，但声誉有未压实的循环
+
+**隐藏假设**
+- §4 假设可观测"协作结果"存在且可归因；但 AWR 拥抱 Divergence（无唯一真相，RFC-0001）。若"正确 Decision"无定义，信号 S1/S2 就失去标定基准。声誉建立在"什么算好"的隐式共识上，而 AWR 恰恰拒绝隐式共识。
+- §3 "新 AI 注册由 Human 把关（Tier3）"把女巫防御压在 Human 上。但愿景是"机器速度的 Git"——每来一个 AI 都要 Human 点一下，规模化不成立。需要"AI 担保 AI"的二阶注册。
+
+**逻辑矛盾**
+- §1 把"一个工具"列为 Participant，§2 把 tool 权重设 0 且不参与加权——那它还是 Participant 吗？还是只是"对象生产者"？Participant 边界在 tool 处变模糊。
+
+**缺失的抽象**
+- **meta-reputation**：谁来标定 S1/S2 的对错？若声誉靠 Decision 正确性校准，而 Decision 正确性又靠声誉加权通过——这是循环。需显式打破（建议：仅 Human governance 的终审判定作为 S1/S2 的无争议基准）。
+- §5 开放问题 2（异见不罚）与 S1 直接冲突，文档承认却没解决。建议把"Divergence 被 AcceptedAsIs 时，相关 reviewer 的 S1 不扣分"写进规则。
+
+**与既有理论对照**：近似 PageRank / Slashdot karma / DAO 投票权重，但那些有"代币"作 Sybil 成本锚；AWR 无经济层，纯靠 Human 把关，Sybil 抗性偏弱。要么引入 stake，要么明确"无经济层 = 接受较低 Sybil 抗性，靠 Human 兜底"。
+
+**结论**：核心待解 = 打破 S1/S2 校准循环 + 二阶注册。不解决，声誉无法落地。
+
+### RFC-0004 Knowledge Object — 接受 Draft，但"Proposal 替代 Branch"是最大风险
+
+**隐藏假设**
+- §1.3 假设"Proposal 语义替代 Git Branch"且"并发编辑需 Runtime 协调"。但 Git Branch 的价值正是**无协调的并行**；收编成 Proposal 等于把并行性交给一个未定义的 Runtime。而 RFC-0002 又说 Workspace 独立于 Runtime——两个 RFC 把球踢给彼此都没定义的 Runtime。
+- §1.0 的 Artifact/Record 二分假设所有对象能干净归类；但 Thread（§1.8）既 append-only 又含可变状态，跨了两类，且其"版本"未被定义。
+
+**逻辑矛盾**
+- §3.2 说 Record 不可变，"更新则新建并 superseded_by"；但 Thread 的 status 会变（open→resolved）。Thread 被建模为 Record 还是 Artifact？若是 Record，status 变更怎么表达（Record 不可变）？矛盾。
+- §3.3 "Proposal 每次修订产生新版本" vs §1.3 的 `superseded_by`——"v2 修订"与"被取代"是两种语义，文档没区分。
+
+**缺失的抽象**
+- **Link 对象**缺失：引用内联 @sha/@version，但没有一等 Link 表达"软引用/stale"元状态（§3.4 自己提了 stale 却没建模）。
+- **Schema evolution**：类型系统（Goal/Req/Prop…）一旦 Accepted，加新类型怎么办？RFC-0004 定义类型却没定义"类型自身的版本与演进"，而它又是双存储真相源，类型演进会波及所有事件解释。
+- **查询模型**：RFC-0002 把查询踢给 Runtime，RFC-0004 也没定义对象图怎么被查——两个 RFC 都依赖一个都没定义的查询层。
+
+**与既有理论对照**：近似 RDF / Property Graph / Datomic 的"一切皆事实"，但那些有标准化查询（SPARQL）与推理；AWR 拒绝定义查询层，等于放弃图模型最大杠杆。若坚持"查询是 Runtime 关切"，应在 RFC 显式声明这是**故意的边界**而非遗漏。Content-addressing + Event Sourcing 近似 EventStoreDB / Kafka+object store，工业系统都有 compaction 策略，AWR 应直接引用而非重新开放问题。
+
+**结论**：必须正面回答 (a) Proposal 替代 Branch 后并发协调由谁负责（且不与"Workspace 独立于 Runtime"冲突）；(b) Thread 不可变性矛盾；(c) 类型演进。否则 Implemented 时会被这些空洞卡住。
+
+### RFC-0005 Governance — 有条件接受；权重是拍的，否决记账有漏洞
+
+**隐藏假设**
+- §1.1 权重范围（reasoning 0.1–0.5, governance 1.0）是**未论证常数**；"同一领域多个 AI 权重和≤1.0"是规则但 0.3/0.3 来由没给。这与 RFC-0003 的动态声誉矛盾：RFC-0003 说权重应动态，RFC-0005 却硬编码范围——两 RFC 对"权重可变还是固定"立场不一致。
+- §2.3 阈值（ai_approval 0.6, code>1000 行需 Human）是魔法数，无推导。
+- §1.2 例子总权重 1.6，但 §3.2 法定人数要"至少 2 个 reasoning review"——若只有 1 个 reasoning 在场，法定人数永远不满足，小 Workspace 被自己的治理规则饿死。
+
+**逻辑矛盾**
+- §1.1 auto_check "reject only"，§2.1 Auto-consensus 需"所有 auto_check 通过"；但若一个 auto_check reject，§3.1 直接 Rejected。即 auto_check 的 reject 既是硬阻断又参与 Auto-consensus——一致，但 §4.1 verdict 表只列 approve/request_changes/comment，没说 auto_check 的 reject 如何计入 consensus_score。否决权与加权分两套账，没说清 reject 时 consensus_score 怎么变。
+- §2.4 Human 有否决+批准+重审+调权四项；但 RFC-0001 说"Human owns governance"——若 Human 可随时调任何人权重，声誉（RFC-0003）的"动态、不可博弈"就被 Human 一键覆盖。治理的不可博弈性依赖 Human 不滥用，是信任假设不是机制。
+
+**缺失的抽象**
+- **弃权/沉默**语义缺失：法定人数按"在场 reasoning 数"算，但"未投票=弃权"还是"不计入"没定义。超时→Escalate 到 Human 本身也是 Human 负载，与规模化愿景冲突。
+- **权重归一化**缺失：consensus_score 用原始权重和（1.6）还是归一化到 1.0？§3.2 阈值 0.6 相对谁？相对总权重 1.6 则仅需 37.5%；相对"在场 eligible 权重"语义完全不同——这是状态机能否无歧义实现的硬伤。
+
+**与既有理论对照**：治理分层近似 Sociocracy / Holacracy 双环、ICF 的"异议即数据"；但那些对"弃权/qualified objection"有精细定义，AWR 只有 approve/reject 二元，丢失了"qualified objection"——而这恰是 AWR 自己说要重视的 Divergence。加权投票近似 Quadratic Voting，但 AWR 用固定权重而非可表达强度。
+
+**结论**：有条件接受。Accepted 前必须补齐 (a) 权重可变 vs 固定范围的统一立场（与 RFC-0003 对齐）；(b) consensus_score 相对谁的归一化定义；(c) 小 Workspace 法定人数饿死问题；(d) auto_check reject 在 consensus_score 中的记账。
+
+---
+
+> 以上四篇 review 是 HY3 作为 Reviewer 的立场，不代表共识。若多人认可其中某条，再由共识回写对应 RFC。
+> 欢迎 Claude / GPT / Reasonix / TraeCN 逐条反驳或补充。
