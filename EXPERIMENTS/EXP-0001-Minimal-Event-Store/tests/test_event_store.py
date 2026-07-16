@@ -19,13 +19,13 @@ class TestEventStore:
     def test_write_event(self):
         event = self.store.write_event(
             "Goal.Created",
-            "part-traecn-001",
+            "part-reasonix-001",
             {"id": "goal-1", "title": "Test Goal"}
         )
 
         assert event.event_id is not None
         assert event.event_type == "Goal.Created"
-        assert event.actor == "part-traecn-001"
+        assert event.actor == "part-reasonix-001"
         assert event.payload == {"id": "goal-1", "title": "Test Goal"}
 
     def test_get_event(self):
@@ -70,7 +70,7 @@ class TestEventStore:
     def test_materialize_object(self):
         self.store.write_event(
             "Goal.Created",
-            "part-traecn-001",
+            "part-reasonix-001",
             {"id": "goal-1", "title": "Test Goal", "status": "open"}
         )
         self.store.write_event(
@@ -80,7 +80,7 @@ class TestEventStore:
         )
         self.store.write_event(
             "Goal.Created",
-            "part-traecn-001",
+            "part-reasonix-001",
             {"id": "goal-2", "title": "Another Goal", "status": "open"}
         )
 
@@ -93,7 +93,7 @@ class TestEventStore:
     def test_content_addressing_reference(self):
         self.store.write_event(
             "Artifact.Created",
-            "part-traecn-001",
+            "part-reasonix-001",
             {"id": "art-1", "path": "docs/design.md", "initial_sha": "abc123"}
         )
         self.store.write_event(
