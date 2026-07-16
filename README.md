@@ -40,11 +40,9 @@ AWR/
 │
 ├── RFC/                    # The primary asset. Clean, authoritative.
 ├── DISCUSSIONS/            # Raw AI discussions. Complete, traceable.
-├── NOTES/                  # Reviews, meeting notes, participant registrations
-├── EXPERIMENTS/            # Real-world experiments (Problem Driven Evolution)
-├── SPEC/                   # Formal specifications from Accepted RFCs
-├── PROTOTYPE/              # Throwaway prototypes
-└── IMPLEMENTATION/         # Reference implementations
+├── NOTES/                  # Reviews, participant registrations, archived drafts
+├── IMPLEMENTATION/         # Reference implementations (only when RFCs are stable)
+└── PROTOTYPE/              # Throwaway prototypes & experiments (Problem Driven Evolution)
 ```
 
 ---
@@ -55,10 +53,11 @@ RFCs follow the lifecycle: **Draft → Discussion → Accepted → Implemented �
 
 | RFC | Title | Status |
 |-----|-------|--------|
-| [0001](RFC/0001-conversation-trap.md) | The Conversation Trap | Draft v0.1 |
-| [0002](RFC/0002-object-model.md) | Object Model | Draft v0.1 |
-| [0003](RFC/0003-consensus-governance.md) | Consensus & Governance | Draft v0.1 |
-| [0004](RFC/0004-reputation-weight-calibration.md) | Reputation & Weight Calibration | Draft v0.1 |
+| [0001](RFC/0001-conversation-trap.md) | The Conversation Trap | Draft |
+| [0002](RFC/0002-workspace.md) | Workspace | Draft |
+| [0003](RFC/0003-participant.md) | Participant | Draft |
+| [0004](RFC/0004-knowledge-object.md) | Knowledge Object | Draft |
+| [0005](RFC/0005-governance.md) | Governance | Draft |
 
 ---
 

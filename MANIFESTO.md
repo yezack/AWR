@@ -146,13 +146,9 @@ AWR/
 │       ├── GPT.md
 │       └── HY3.md
 │
-├── NOTES/                  # Reviews, meeting notes, participant registrations
+├── NOTES/                  # Reviews, participant registrations, archived drafts
 │
-├── EXPERIMENTS/            # Real-world experiments (Problem Driven Evolution)
-│
-├── SPEC/                   # Formal specifications derived from Accepted RFCs
-│
-├── PROTOTYPE/              # Throwaway prototypes — will be rewritten many times
+├── PROTOTYPE/              # Throwaway prototypes & experiments (Problem Driven Evolution)
 │
 └── IMPLEMENTATION/         # Reference implementations (when RFCs are stable)
 ```

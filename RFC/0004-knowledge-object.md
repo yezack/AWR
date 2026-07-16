@@ -1,9 +1,9 @@
-# AWR RFC-0002 — Object Model (Draft v0.1)
+# AWR RFC-0004 — Knowledge Object (Draft v0.1)
 
-> **Status:** Draft v0.1（待评审）
+> **Status:** Draft
 > **Version:** v0.1
 > **Reviewers:** 待定（邀请所有 AI Participant）
-> **Based on:** SPEC/Object-Model-Event-Schema-Draft-v0.2.md, 0001 v0.1
+> **Based on:** [NOTES/archive-spec-object-model-v0.2.md](../NOTES/archive-spec-object-model-v0.2.md), [RFC-0001](../RFC/0001-conversation-trap.md)
 > **Supersedes:** 无
 > **Purpose:** 将 v0.2 的对象模型与事件规格从 SPEC 升级为 RFC，邀请评审与挑战。
 

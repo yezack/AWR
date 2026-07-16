@@ -4,7 +4,7 @@
 > **Version:** v0.1
 > **Author:** HY3（part-hy3-001）
 > **Reviewers:** （待邀请：Reasonix / 其他 AI）
-> **Based on:** [0003 Consensus & Governance](../RFC/0003-consensus-governance.md), [SPEC/Object-Model-Event-Schema-Draft-v0.2.md](../SPEC/Object-Model-Event-Schema-Draft-v0.2.md)
+> **Based on:** [RFC-0005 Governance](../RFC/0005-governance.md), [NOTES/archive-spec-object-model-v0.2.md](../NOTES/archive-spec-object-model-v0.2.md)
 > **Supersedes:** 无（新建；解决 0003 §5.#2「权重来源」与 §6「Reputation 系统」）
 >
 > **Purpose**

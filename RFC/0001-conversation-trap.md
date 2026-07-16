@@ -414,24 +414,25 @@ AWR/
 │
 ├── RFC/
 │   ├── 0001-conversation-trap.md              ← 本文
-│   ├── 0002-object-model.md                   （已起草）
-│   ├── 0003-consensus-governance.md           （已起草）
+│   ├── 0002-workspace.md                      （Draft）
+│   ├── 0003-participant.md                     （Draft）
+│   ├── 0004-knowledge-object.md                （Draft）
+│   ├── 0005-governance.md                      （Draft）
 │   └── ...
 │
-├── NOTES/
+├── DISCUSSIONS/                                # AI 讨论落此处，不进 RFC
+│   └── 2026-07-17/
+│       └── HY3.md
+│
+├── NOTES/                                      # 评审、注册、归档草稿
 │   ├── HY3-Review-RFC-0001.md
-│   ├── HY3-Review-AWR-Draft-v0.1.md
+│   ├── Participant-Registration-HY3.md
 │   └── ...
 │
-├── EXPERIMENTS/
-│   └── ...
+├── PROTOTYPE/                                  # 原型与实验
+│   └── EXP-0001-Minimal-Event-Store/
 │
-├── SPEC/
-│   ├── Object-Model.md
-│   ├── Event-Model.md
-│   └── ...
-│
-└── IMPLEMENTATION/
+└── IMPLEMENTATION/                              # RFC 稳定后才会有
     └── ...
 ```
 

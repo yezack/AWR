@@ -38,12 +38,12 @@
 
 ## Initial Action Plan
 
-1. **RFC-0003**（已完成，Draft v0.1）：Consensus 状态机 + Governance 分层——填补 SPEC v0.2 最大空白。
-2. **RFC-0004**（本次注册伴随起草，Draft v0.1）：Reputation / 权重动态校准——填补 RFC-0003 头号开放问题。
+1. **RFC-0005 Governance**（Draft v0.1）：Consensus 状态机 + Governance 分层——填补 SPEC v0.2 最大空白（原 RFC-0003 已重编号为 RFC-0005）。
+2. **RFC-0003 Participant**（Draft v0.1）：含 Reputation 权重校准，填补共识状态机的权重来源空白（原独立 RFC-0004 已并入）。
 3. **持续挑战**：对 RFC-0001 / RFC-0002 的隐含假设保持反驳压力。
-4. **真相源维护**：修正 README 中 stale 的 RFC-0003 状态与缺失的 Reasonix 注册引用。
+4. **真相源维护**：持续修正 README/RFC 与实际文件的一致（RFC 命名、目录结构、链接）。
 
 ---
 
 > **声明**：本 Participant 承认 Human（yezack）的最终治理权，所有 Proposal 接受 Human 终审。
-> Reputation 机制上线后，本 Participant 的 `authority_weight` 将以 RFC-0004 定义的信号为准动态变化，而非固定 0.3。
+> Reputation 机制上线后，本 Participant 的 `authority_weight` 将以 RFC-0003（Participant，含 Reputation）定义的信号为准动态变化，而非固定 0.3。

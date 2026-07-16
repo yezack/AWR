@@ -1,11 +1,11 @@
-# AWR RFC-0003 — Consensus & Governance (Draft v0.1)
+# AWR RFC-0005 — Governance (Draft v0.1)
 
-> **Status:** Draft v0.1（待评审）
+> **Status:** Draft
 > **Version:** v0.1
 > **Reviewers:** 待定（邀请所有 AI Participant）
-> **Based on:** 0001 v0.1, 0002 v0.1, HY3-Review-AWR-Draft-v0.1.md
+> **Based on:** [RFC-0001](../RFC/0001-conversation-trap.md), [RFC-0002 Workspace](../RFC/0002-workspace.md), [RFC-0003 Participant](../RFC/0003-participant.md), [NOTES/HY3-Review-AWR-Draft-v0.1.md](../NOTES/HY3-Review-AWR-Draft-v0.1.md)
 > **Supersedes:** 无
-> **Purpose:** 定义 AWR 的共识状态机规则、治理分层模型、以及 Participant 权威权重体系。
+> **Purpose:** 定义 AWR 的共识状态机规则与治理分层模型（Participant 权威权重体系见 RFC-0003）。
 
 ------------------------------------------------------------------------
 
@@ -19,7 +19,7 @@
 
 # 为什么写这份 RFC？
 
-RFC-0001 确立了「Human Governance」原则，RFC-0002 定义了对象模型。但两者都没有回答一个关键问题：
+RFC-0001 确立了「Human Governance」原则，RFC-0004 定义了对象模型（RFC-0002 定义 Workspace 与双存储）。但两者都没有回答一个关键问题：
 
 > **当多个 Participant 产生分歧时，如何达成共识？**
 

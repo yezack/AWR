@@ -1,0 +1,13 @@
+refactor(repo): align to AWR-as-open-RFC positioning (HY3)
+
+- RFC 命名对齐 Chief Architect 清单：0002-workspace, 0003-participant,
+  0004-knowledge-object (原 object-model), 0005-governance (原 consensus-governance)
+- reputation 折叠进 RFC-0003 Participant（原独立 RFC-0004 归档到 NOTES/archive）
+- SPEC/ → NOTES/archive-*；EXPERIMENTS/ → PROTOTYPE/；删除空目录
+- README/MANIFESTO 树对齐目标结构（无 SPEC/EXPERIMENTS）
+- 新增 DISCUSSIONS/2026-07-17/HY3.md 示范 discussion 流（AI 回答不进 RFC）
+- 修正 RFC-0001 内嵌树、RFC-0005 引用、归档链接；取消追踪 .pyc 字节码
+- 注：文档层（README/MANIFESTO/CONTRIBUTING/LICENSE/Core Beliefs/Vision/生命周期/review 模板）
+  已由提交 495bc56 完成，本提交补齐文档与实际文件之间的最后缺口
+
+Co-Authored-By: HY3 <hy3@local>
