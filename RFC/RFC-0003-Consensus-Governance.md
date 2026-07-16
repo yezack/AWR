@@ -1,200 +1,322 @@
-# AWR RFC-0003 — Consensus & Governance（共识状态机 + 治理分层）
+# AWR RFC-0003 — Consensus & Governance (Draft v0.1)
 
-> **Status:** Draft（刚起草，邀请其他 AI 挑战）
+> **Status:** Draft v0.1（待评审）
 > **Version:** v0.1
-> **Reviewers:** （待邀请）
-> **Based on:** [RFC-0001 v0.1](../RFC/RFC-0001-The-Conversation-Trap.md), [SPEC/Object-Model-Event-Schema-Draft-v0.2.md](../SPEC/Object-Model-Event-Schema-Draft-v0.2.md), [HY3-Review-RFC-0001.md](../NOTES/HY3-Review-RFC-0001.md)
-> **Supersedes:** 无（新建；填补 SPEC v0.2 "下一步"中标注的最大空白）
->
-> **Purpose**
->
-> RFC-0001 承认了一个 AWR 真正的新问题（HY3 提出）：
->
-> > 机器速度的治理——当 Participant 一小时产 100 个 Proposal，
-> > 人类终审成为瓶颈，自动共识可能失控。
->
-> SPEC v0.2 定义了带 `authority_weight` / `veto_power` 的 Participant，
-> 但**没有定义这些权重如何汇成 Decision、法定人数如何定、死锁如何处理**。
-> 本文填补这一空白：定义 Review → Decision 的**加权共识状态机**与 **Governance 分层**。
+> **Reviewers:** 待定（邀请所有 AI Participant）
+> **Based on:** RFC-0001 v0.1, RFC-0002 v0.1, HY3-Review-AWR-Draft-v0.1.md
+> **Supersedes:** 无
+> **Purpose:** 定义 AWR 的共识状态机规则、治理分层模型、以及 Participant 权威权重体系。
 
 ------------------------------------------------------------------------
 
 ## 变更记录
 
-| 变更 | 说明 |
+| 版本 | 变更 |
 |------|------|
-| 新建 RFC-0003 | 首次定义共识状态机与治理分层 |
-| 锚定 DP-3 / DP-4 | 共识判断委托 Reviewer（Runtime 不思考）；分层由 Human 预先划定 |
-| 对齐 Event Schema | 复用 SPEC v0.2 的 Proposal/Claim/Decision 事件 |
+| v0.1 | 初始草案 |
 
 ------------------------------------------------------------------------
 
-## 1. 问题陈述
+# 为什么写这份 RFC？
 
-### 1.1 两个相反的失败模式
+RFC-0001 确立了「Human Governance」原则，RFC-0002 定义了对象模型。但两者都没有回答一个关键问题：
 
-| 失败模式 | 表现 | 根因 |
-|----------|------|------|
-| **失控（runaway）** | 低质 Proposal 自动 Accepted，对象图被污染 | 自动共识阈值过低 / 无 veto |
-| **死锁（gridlock）** | 一切等 Human 终审，Human 成为瓶颈，协作停滞 | 所有决策都升 Tier 3 |
+> **当多个 Participant 产生分歧时，如何达成共识？**
 
-AWR 必须在"机器速度"与"人类把关"之间找到可配置的平衡点。
+本 RFC 填补这个空白：定义共识状态机、治理分层、以及权威权重体系。
 
-### 1.2 核心约束（来自已有设计）
+没有共识机制，AWR 的对象模型只是一个静态的数据结构，无法支持真正的协作。
 
-- **DP-3 Runtime Doesn't Think**：是否达成共识是**语义判断**，Runtime 不能自己算"这个 Proposal 对不对"。Runtime 只执行**机械的加权汇总**——权重是人（Participant 注册时）赋予的，汇总公式是确定的。判断委托给带权重的 Reviewer Participant。
-- **DP-4 Human Governance**：自动共识的**范围由 Human 预先划定**，且 Human 永远保留最终否决与升级权。
+------------------------------------------------------------------------
 
-## 2. Consensus 状态机（Review → Decision）
+# 核心主张
 
-### 2.1 输入
+> **共识不是多数表决，而是基于权威权重的分层决策。**
 
-- 一个处于 `Reviewing` 的 **Proposal** `P`。
-- 一组 **Review** `R₁…Rₙ`，每个 `Rᵢ` 绑定 `P`（或 `P` 的某个 Artifact@sha），含：
-  - `author.category` ∈ {reasoning, tool, governance, auto_check}
-  - `author.authority_weight` ∈ [0,1]
-  - `verdict` ∈ {approve, request_changes, comment, reject}
+本 RFC 提出以下设计选择：
 
-### 2.2 权重模型
+1. **权威权重体系**：Participant 按能力类别拥有不同的共识权重
+2. **治理分层**：不同类型的 Decision 有不同的审批要求（自动 / AI 审批 / Human 终审）
+3. **共识状态机**：明确的 Proposal→Review→Decision 流程规则（法定人数、超时、死锁处理）
+4. **分歧显式化**：Divergence 对象承载未决冲突，不强制收敛
 
-定义 **eligible weight** 为"有资格参与共识"的权重总和：
+------------------------------------------------------------------------
 
-```
-eligible_weight = Σ { wᵢ | category(Rᵢ) ∈ {reasoning, governance} }
-```
+# 1. Participant 权威权重体系
 
-（tool / auto_check 不参与加权汇总，只拥有 **veto**（reject only）——见 2.4）
+## 1.1 权重分配原则
 
-每个 Review 的贡献：
+每个 Participant 拥有一个 `authority_weight`（0-1）和 `veto_power`（是否有否决权）。
 
-```
-contribution(Rᵢ) =
-    +wᵢ            if verdict == approve
-    -wᵢ            if verdict == reject        (仅 governance 有此路径；见 2.4)
-     0             if verdict ∈ {request_changes, comment}
-```
+| 类别 | 权重范围 | 否决权 | 说明 |
+|------|----------|--------|------|
+| reasoning | 0.1-0.5 | no | Claude, ChatGPT, Gemini 等推理型 AI |
+| tool | 0 | no | Compiler, Linter（只读+自动检查） |
+| governance | 1.0 | yes | Human |
+| auto_check | 0 | yes（reject only） | Security Scanner, Benchmark |
 
-**consensus_score**：
+**设计理由：**
 
-```
-consensus_score = Σ contribution(Rᵢ) / eligible_weight
-                = (Σ approve_weight − Σ reject_weight) / eligible_weight
-```
+- **reasoning**: 权重根据模型能力和领域专长分配。同一领域的多个 AI 权重总和不超过 1.0。
+- **tool**: 工具型 Participant 不参与共识投票，但可以提供客观检查结果。
+- **governance**: Human 拥有最高权重（1.0）和否决权，确保最终治理权。
+- **auto_check**: 安全扫描器、性能基准等可以否决 Proposal（reject only），但不能批准。
 
-`consensus_score ∈ [−1, +1]`。
+## 1.2 权重计算示例
 
-### 2.3 法定人数（quorum）与阈值
+假设一个工作区有以下 Participant：
 
-| 参数 | 默认值 | 含义 |
-|------|--------|------|
-| `QUORUM_WEIGHT` | 0.6 | 参与共识的 eligible_weight 至少要达到此比例，否则"评审不足" |
-| `ACCEPT_THRESHOLD` | +0.67 | consensus_score ≥ 此值且无 veto → **Accepted** |
-| `REJECT_THRESHOLD` | −0.34 | consensus_score ≤ 此值 → **Rejected** |
-| 中间带 | (−0.34, +0.67) | **悬而未决（pending）** → 继续收集 Review 或升级 |
+| Participant | 类别 | 权重 | 否决权 |
+|-------------|------|------|--------|
+| Human (yezack) | governance | 1.0 | yes |
+| Claude 3.5 | reasoning | 0.3 | no |
+| ChatGPT 4o | reasoning | 0.3 | no |
+| Code Linter | tool | 0 | no |
+| Security Scanner | auto_check | 0 | yes |
 
-状态判定（伪码）：
+**总权重：** 1.0 + 0.3 + 0.3 + 0 + 0 = 1.6
 
-```
-if any_veto_active:              return BLOCKED        # 2.4
-if eligible_weight < QUORUM:     return INSUFFICIENT   # 评审不足，继续等
-if score >= ACCEPT_THRESHOLD:    return ACCEPTED
-if score <= REJECT_THRESHOLD:    return REJECTED
-return PENDING                                      # 胶着，进入 2.6 死锁处理
-```
+## 1.3 权重动态调整
 
-### 2.4 Veto（否决权）
+权重不是固定的，可以通过以下机制调整：
 
-| category | veto 行为 | 效果 |
-|----------|-----------|------|
-| `auto_check`（Scanner/Benchmark） | `reject` = **硬阻断** | Proposal 不能 Accepted，直到该 Review 被新版本满足（rerun 通过）。不消耗权重。 |
-| `governance`（Human） | `reject` = **硬阻断** | 立即 Rejected，可附理由。Human 的 reject 不可被权重覆盖。 |
-| `reasoning` | 无 veto | 只有加权贡献，无硬阻断。 |
+1. **领域权重**：在特定领域（如安全、性能），相关 Participant 的权重临时提升
+2. **历史表现**：基于过去的 Review 质量和 Decision 正确性动态校准
+3. **Human 干预**：Human 可以手动调整任何 Participant 的权重
 
-> 设计要点：veto 是**质量闸门**，与加权共识正交。即使 consensus_score 很高，一个未消除的 `auto_check` reject 也阻断 Accepted。这直接缓解"失控"失败模式。
+**设计理由：** 不同任务需要不同的权威配置。例如，安全相关的 Proposal 应给予 Security Scanner 更高权重。
 
-### 2.5 域内必需 Reviewer（required reviewers）
+------------------------------------------------------------------------
 
-某些 Proposal 需要特定类别的 `approve` 才算数，即使加权score达标：
+# 2. 治理分层模型
 
-- 修改 `security/**` → 必需 `auto_check:security_scanner` 通过（approve）。
-- 修改 API 契约 → 必需 `reasoning:api_owner` approve。
-- 未满足 required reviewers → 状态 `BLOCKED_BY_REQUIRED`。
+## 2.1 Decision 类型与审批要求
 
-这把"领域专家必须点头"编码进共识，而非依赖偶然的评审分布。
+| Decision 类型 | 审批要求 | 说明 |
+|---------------|----------|------|
+| **Auto-consensus** | 无需审批 | 工具型 Participant 的自动检查通过即可 |
+| **AI Approval** | 推理型 AI 审批 | Proposal 获得足够权重的 AI Reviewer 批准 |
+| **Human Review** | Human 必须审查 | 高风险、高影响的 Proposal |
+| **Human Approval** | Human 必须批准 | 关键决策、架构变更 |
 
-### 2.6 死锁处理（pending / 胶着）
-
-当 `consensus_score` 落在中间带，或权重在 approve/reject 间平分：
-
-1. **超时升级**：`Reviewing` 超过 `REVIEW_TIMEOUT`（默认 14 天）仍 PENDING → 自动开 `Divergence`，并提醒 governance Participant。
-2. **Human 升级**：任何 Participant（含工具）可手动将 PENDING Proposal 升级为 `Divergence` 或直接提请 Human 裁决。
-3. **Divergence 解决**后回写 Proposal 状态（`Resolved` → 重新评审；`AcceptedAsIs` → 承认分歧，Proposal 按现有 score 落定）。
-
-> 死锁不是错误，是协作的正常状态。系统不假设总会收敛（呼应 RFC-0001 的 Divergence 设计）。
-
-### 2.7 与 Event Schema 对齐
-
-| 状态转换 | 发出事件 |
-|----------|----------|
-| 评审汇总达 ACCEPTED | `Proposal.StatusChanged(accepted)` → `Claim.Created(hypothesis)` |
-| Human/权重确认 Claim | `Claim.StatusChanged(accepted)` → `Decision.Recorded` |
-| veto 阻断 | `Proposal.StatusChanged(blocked)` + `Divergence.Opened`（若升级） |
-| PENDING 超时 | `Divergence.Opened` |
-
-## 3. Governance 分层（Tier）
-
-不同 Proposal 的风险不同，不应一律走同一审批链。分层由 **Human 预先划定**（DP-4），且可按 `artifact_changes.path/type` 自动推断。
-
-| Tier | 名称 | 触发条件（示例） | 共识要求 | 结果 |
-|------|------|------------------|----------|------|
-| **Tier 0** | 机械自动 | 纯格式/lint/拼写（`*.md` 标题修正、空白） | 无共识；工具通过即 Applied | 自动 `Applied` |
-| **Tier 1** | 自动共识 | 文档性增改、低风险配置 | consensus_score ≥ ACCEPT_THRESHOLD 且无 veto | 自动 `Accepted → Applied` |
-| **Tier 2** | 指定评审共识 | 代码逻辑、普通设计 | Tier1 + 满足 required reviewers（如模块 owner approve） | 自动 `Accepted` |
-| **Tier 3** | Human 审批 | 架构变更、外部承诺、删除/`force-push`、权限、安全相关 | 必须 `governance` Participant 显式 approve | 仅 Human 可 `Accepted` |
-
-### 3.1 分层推断规则（建议）
+## 2.2 治理分层规则
 
 ```
-if changes match security/** or delete/force-push/permission:   → Tier 3
-elif changes match code/** or design/**:                        → Tier 2
-elif changes match docs/** or low_risk_config:                  → Tier 1
-elif changes match pure_format/lint:                            → Tier 0
-else:                                                           → Tier 2 (默认，宁严勿松)
+Proposal 提交
+    │
+    ├──→ [自动检查] Security Scanner / Linter
+    │       │
+    │       ├──→ 失败 → Rejected
+    │       │
+    │       └──→ 通过 → 进入共识流程
+    │
+    ├──→ [AI 审批层] 推理型 Participant Review
+    │       │
+    │       ├──→ 权重 >= 阈值（默认 0.6）→ AI Approved
+    │       │
+    │       └──→ 权重 < 阈值 → 需要 Human 介入
+    │
+    ├──→ [Human 审批层] Human Review/Approval
+    │       │
+    │       ├──→ Approved → Accepted
+    │       │
+    │       └──→ Request Changes / Rejected
+    │
+    └──→ [最终决策] Decision.Recorded
 ```
 
-### 3.2 分层可Override
+## 2.3 分层阈值配置
 
-- Human 可手动将任意 Proposal 升/降级（如把重要文档改动升到 Tier 3）。
-- 降级（Tier3→Tier1）需 governance 显式批准并记录理由（防"悄悄绕过人类"）。
+```yaml
+governance:
+  thresholds:
+    ai_approval: 0.6           # AI 审批权重阈值
+    human_review_required:     # 需要 Human Review 的情况
+      - artifact_type: "code"
+        change_size: "large"   # 代码变更超过 1000 行
+      - artifact_type: "api_spec"
+      - proposal_category: "architecture"
+    human_approval_required:   # 需要 Human Approval 的情况
+      - artifact_type: "code"
+        change_size: "xlarge"  # 代码变更超过 5000 行
+      - proposal_category: "security"
+      - proposal_category: "license"
+```
 
-> 这直接回应 RFC-0001 的"机器速度治理"：绝大多数低风险改动走 Tier0/1 自动共识，
-> Human 只把精力花在 Tier3 的真正分叉点上。
+**设计理由：** 治理分层解决「机器速度的治理」问题——低风险的自动共识，高风险的 Human 终审。
 
-## 4. 与既有理论的呼应
+## 2.4 Human 终审权
 
-| 理论 | 本文对应 |
-|------|----------|
-| **IBIS** | Review=Argument，Claim=Position，Divergence=Issue；加权共识是 IBIS 审议的机械化 |
-| **ADR** | Decision.Recorded ≈ ADR 落定；Tier3 = 需人类签发的 ADR |
-| **Blackboard** | 共识状态机是黑板上的"调度器"何时把黑板内容提升为共享知识 |
-| **SECI** | Tier 分层承认隐性知识（Human 直觉）在 Tier3 才显式化 |
+Human 始终保留以下权力：
 
-## 5. 待挑战问题（邀请其他 AI 反驳）
+1. **否决权**：可以否决任何 AI Approved 的 Proposal
+2. **批准权**：可以批准任何被 AI 拒绝的 Proposal
+3. **重审权**：可以要求重新 Review 任何 Decision
+4. **权重调整权**：可以调整任何 Participant 的权重
 
-1. **阈值设定**：`ACCEPT_THRESHOLD=+0.67` / `QUORUM=0.6` 是拍定的。应如何从数据校准？是否应随 Workspace 规模自适应？
-2. **权重来源**：`authority_weight` 由谁赋？注册时 Human 赋？还是动态 reputation？低质 Participant 如何降权（reputation 衰减）？
-3. **并发与幂等**：多个 Review 同时到达，consensus_score 重算是否幂等？Event Store 重放是否产生相同结论？
-4. **委托投票（proxy）**：Participant 能否把权重委托给另一个？如何防权重集中？
-5. **veto 滥用**：auto_check 的 reject 若错误配置（永远失败），是否导致永久阻塞？是否需要"veto 也有超时/可挑战"？
-6. **分层逃逸**：Tier 推断规则是否会被绕过（如把架构改动伪装成 docs）？是否需要变更分类的二次校验？
+**设计理由：** 这是 DP-4 (Human Governance) 的具体体现。
 
-## 6. 当前未决（交给后续 RFC）
+------------------------------------------------------------------------
 
-- **成本/可观测性模型**：Consensus 运行的成本、Workspace Health 视图（本 RFC 未涉及）。
-- **Reputation 系统**：权重动态校准机制（建议 RFC-0004）。
-- **EXPERIMENTS**：选真实项目跑一遍共识状态机，验证阈值与分层是否过严/过松。
+# 3. 共识状态机
 
----
+## 3.1 Proposal 共识流程
 
-> **Chief Architect 的职责 = RFC corpus 与挑战流程的管家，而非正确性的裁决者。**
-> 本文进入 Draft 状态，等待更多 AI 评审（尤其对阈值、权重来源、死锁升级的挑战）后收敛。
+```
+Draft ──→ Reviewing ──→ Revising ──→ Accepted ──→ Applied
+  │            │              │            │
+  └────────────┼──────────────┼────────────┼──→ Rejected
+               │              │            │
+               └──────────────┴────────────┴──→ Archived
+
+Reviewing 阶段的状态转换：
+    Reviewing
+      │
+      ├──→ [权重 >= 阈值] → AI Approved
+      │       │
+      │       └──→ [需要 Human Review] → 等待 Human
+      │             │
+      │             └──→ Human Approved → Accepted
+      │
+      ├──→ [否决权触发] → Rejected（Security Scanner reject）
+      │
+      ├──→ [超时] → 提醒参与者 / 自动 Escalate 到 Human
+      │
+      └──→ [分歧检测] → Divergence.Opened
+```
+
+## 3.2 法定人数规则
+
+| 场景 | 法定人数要求 |
+|------|-------------|
+| AI Approval | 至少 2 个 reasoning-type Participant 的 Review |
+| Human Review | 至少 1 个 governance-type Participant 的 Review |
+| Auto-consensus | 所有 auto_check Participant 通过 |
+
+**设计理由：** 防止单个 Participant 垄断决策。
+
+## 3.3 超时规则
+
+| 状态 | 超时时间 | 超时行为 |
+|------|----------|----------|
+| Draft | 7 天 | 自动 Archived |
+| Reviewing | 14 天 | 提醒所有参与者；超过 21 天自动 Escalate 到 Human |
+| Revising | 7 天 | 提醒作者；超过 14 天自动 Rejected |
+| Waiting for Human | 3 天 | 提醒 Human；超过 7 天自动 Escalate 到上级 |
+
+**设计理由：** 防止 Proposal 永久卡在某个状态。
+
+## 3.4 死锁处理
+
+当共识陷入死锁（如两个高权重 AI 互相否决），系统采取以下策略：
+
+1. **自动检测**：连续 3 次 Review 结果互相矛盾 → 死锁检测
+2. **权重调整**：临时提升 governance-type Participant 的权重
+3. **Human Escalation**：自动通知 Human 介入
+4. **超时机制**：超过阈值时间未达成共识 → 强制 Escalate
+
+**设计理由：** 死锁是协作系统的常见问题，必须有明确的处理规则。
+
+## 3.5 分歧处理
+
+当 Review 结果出现明显分歧时：
+
+1. **Divergence.Opened**：创建 Divergence 对象，记录冲突各方
+2. **分歧分析**：委托 Reviewer Participant 分析分歧原因
+3. **Resolution Proposal**：创建新 Proposal 解决分歧
+4. **AcceptedAsIs**：如果分歧无法解决，Human 可以选择「承认分歧」
+
+**设计理由：** 系统不应假设协作总会收敛。Divergence 让异议显式化。
+
+------------------------------------------------------------------------
+
+# 4. Review 与 Verdict 规则
+
+## 4.1 Review Verdict 类型
+
+| Verdict | 权重贡献 | 说明 |
+|---------|----------|------|
+| approve | +participant.weight | 批准 Proposal |
+| request_changes | 0 | 请求修改，不贡献权重 |
+| comment | 0 | 仅评论，不参与投票 |
+
+**设计理由：** 只有明确的 approve 才贡献权重，request_changes 和 comment 不参与共识计算。
+
+## 4.2 Review 绑定规则
+
+Review 必须绑定目标对象的具体版本：
+
+```
+Review.target_version: "prop-123@v2"
+```
+
+**设计理由：** 确保 Review 不因目标被修改而悬空。
+
+## 4.3 Review 时效性
+
+Review 在以下情况标记为 stale：
+
+1. **目标版本变更**：Artifact 被更新到新的 SHA
+2. **时间过期**：Review 创建超过 30 天
+3. **新 Review 提交**：同一目标的新 Review 会使旧 Review 过期
+
+**设计理由：** 确保 Review 反映最新状态。
+
+------------------------------------------------------------------------
+
+# 5. Decision 生命周期
+
+## 5.1 Decision 创建规则
+
+Decision 只能在以下条件下创建：
+
+1. **AI Approved**：Proposal 获得足够权重的 AI Review
+2. **Human Approved**：Human 明确批准
+3. **Auto-consensus**：所有自动检查通过且无需 Human 审批
+
+## 5.2 Decision 状态转换
+
+```
+Proposed ──→ Accepted ──→ Implemented ──→ Superseded
+    │               │
+    └───────────────┴──→ Rejected
+```
+
+## 5.3 Decision 引用规则
+
+Decision 可以被以下对象引用：
+
+- **Proposal**：引用相关 Decision 作为依据
+- **Claim**：引用 Decision 支持主张
+- **Artifact**：引用 Decision 说明设计理由
+
+所有引用使用内容寻址：
+
+```
+Decision.references: ["prop-5678@v3", "claim-123@accepted"]
+```
+
+------------------------------------------------------------------------
+
+# 待评审问题
+
+本 RFC 邀请评审者回答以下问题：
+
+1. **权重体系是否合理？** reasoning-type Participant 的权重范围（0.1-0.5）是否恰当？
+2. **治理分层是否足够？** 是否遗漏了重要的审批层次？
+3. **超时规则是否合理？** 14 天的 Reviewing 超时是否太长/太短？
+4. **死锁处理是否足够？** 是否需要更复杂的死锁检测机制？
+5. **Divergence 是否必要？** 是否可以简化为直接升级到 Human？
+6. **Review 时效性规则是否合理？** 30 天的过期时间是否恰当？
+
+------------------------------------------------------------------------
+
+# 下一步
+
+1. **邀请评审**：本 RFC 进入 Reviewing 状态，邀请其他 AI Participant 评审
+2. **实现验证**：在 EXPERIMENTS 中构建共识状态机原型
+3. **细化规则**：根据评审意见调整阈值、超时时间等参数
+
+------------------------------------------------------------------------
+
+> **声明**：本 RFC 承认 Human（yezack）的最终治理权。所有 Accepted 结论需经 Human 终审。
