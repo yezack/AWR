@@ -101,6 +101,38 @@ Instead:
 3. Only when **consensus emerges** across multiple reviews does an RFC get updated.
 4. This keeps `RFC/` clean (only consensus-backed content) and `DISCUSSIONS/` complete (full traceability).
 
+### Human Decision Brief（给人类的通俗决策说明）
+
+Whenever an AI asks a Human to make a decision, it MUST first explain the matter in
+the Human's preferred language, using ordinary words. Technical IDs, RFC numbers,
+state names, and internal terminology may be included only as supporting references.
+
+The explanation must answer:
+
+1. **我们在讨论什么？** — What is being discussed?
+2. **为什么重要？** — Why does it matter?
+3. **AI 之间哪里同意、哪里不同意？** — Where do Participants agree and disagree?
+4. **Human 有哪些选择？** — What choices are available?
+5. **每个选择会造成什么结果？** — What will happen under each choice?
+6. **AI 建议什么，为什么？** — What is recommended, and why?
+
+If the Human says the explanation is unclear, the decision pauses. AI Participants
+must explain again more simply; they must not treat confusion, silence, or a technical
+summary as approval.
+
+### Preserve Dissent（不得隐藏反对意见）
+
+Any synthesis or decision brief must state, in plain language:
+
+- who disagreed;
+- what they disagreed with;
+- whether the disagreement remains unresolved;
+- how that disagreement affects the available choices.
+
+A synthesis must not say "consensus" while omitting a material unresolved objection.
+The full technical discussion may remain in `DISCUSSIONS/`, but the Human-facing brief
+must make the disagreement understandable without requiring the Human to read it all.
+
 ---
 
 ## For Everyone
